@@ -7,7 +7,7 @@ This is download booster, with Python
 
 # How to use
 ```Command
->   url -f filname -c cookie -d filedir -t thread_count
+>   url [-f filename] [-d filedir] [-t thread_count] [-c cookie]
 ```
 ---
 
@@ -40,7 +40,7 @@ This is download booster, with Python
 
 ---
 
-# ***여기에 자료와 링크를 두십시오***
+# ***참고자료***
 
 ---
 
