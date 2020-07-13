@@ -191,7 +191,7 @@ def Main(argv):
     Debug('다운로드 완료')
 
 #   시간 측정 끝
-    print(f"time:, {time.time() - start} sec")
+    print(f"time: {time.time() - start} sec")
     
 if __name__ == "__main__":
     Main(sys.argv)
