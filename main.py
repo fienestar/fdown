@@ -15,7 +15,7 @@ dir/filename에 최종적으로 파일이 합쳐집니다.
 
 목표: 멀티스레딩과 HTTP Range Request를 활용하여 다운로드 속도를 증가시킵니다.
 
-현재 샘플: python main.py https://files.cloud.naver.com/.fileLink/y6P8tahQ8JFyvWpcB%2BA4vSnOCCKTBIHyuxtJo43x7QBjpF43reXL5%2F%2Fj7R7UxyWKfPSOx3sp%2BMPl9SZxLG%2BjTgY%3D/%EB%93%A3%EA%B8%B0%20%EC%A2%8B%EC%9D%80%20%EB%B0%B0%EA%B2%BD%EC%9D%8C.mp4?authtoken=PtXHZHtMHzkScSHgWBo9MwI%3D -f test.rar -c "NNB=JJLUOBSC44DF6"
+현재 샘플: python main.py python main.py https://files.cloud.naver.com/file/download.api?resourceKey=YnJhaW5lcjEyMzQ1fDEzMTg1NzI2NDAwfEZ8MA -f Shin.mp4 -c "_gid=GA1.2.799192114.1594645465; _ga=GA1.2.1604843523.1594645465; NRTK=ag#all_gr#1_ma#-2_si#0_en#0_sp#0; NDARK=Y; nid_inf=-972008414; NID_JKL=huhz+Zgy2wLUGn8on2oW+dK/fzhbVrl8H3zzRD8oTm0=; NID_SES=AAABeDzsgHcIj0uCxnSXYS9oGOy5vk3ima1Yw9dIiEvl7LPgBy7rQaeo2Tvpin0hoR0R21KPeAXqjuvCa5jlozBD+81Kd5sWSJTubZYgtGBpLfZ6vinKauRpcnjRqn5chAsD1uZ3didNbFC9a53KADKeuXdBLBL6LItJiHblwHQniEnlmygePVb6z73RYGL6828TRIsDQtdHQf18g926QLtOzYtHqubORN+N/WOm44WdozqK4F5dwZHSzIsJoWKSsMNpIWaTvKxx5W78I2fE3MF6PbVEOSV3Jgvr49xj3WacSzJo1EpEzZcPEk3HJHQZ3R/avNrxiw6vFl7GyCCzz7/BXJL25VHdQ7VF1UEKm+/oy6Nyn6C7SUzpIbaYJ/NR+u62G6u90lA/ib9cUN5CduvOqg+tPdbKvWtoFNWB9t7J6UoMwNQ45S7e9DIGPi5hMIHEuHhCLITN3CO6EB0T2/WCfLl//q3a3uSyHCt9u+pPo19hz8hfGEsvP5Cq0jafRgJZNg=="
 """
 
 DEFAULT_THREAD_COUNT = 8
@@ -73,7 +73,11 @@ def MergeFile(dest, filelist):
                 while buf:
                     fd_dest.write(buf)
                     buf = src.read(FILE_BUFFER_SIZE)
-
+    
+    print(filelist)
+    del filelist
+    
+    
 def ParseArgv(argv):
     arg_map = {}
     arg_list = []
@@ -177,8 +181,9 @@ def Main(argv):
 
         for thread in threads:
             thread.join()
-        MergeFile(dest+'.fdown0',[dest+f'.fdown{i}' for i in range(1,thread_count)])
-        os.rename(dest+'.fdown0',dest)
+        MergeFile(dest + '.fdown0', [dest + f'.fdown{i}' for i in range(1, thread_count)])
+        [os.remove(dest + f'.fdown{i}') for i in range(1, thread_count)]
+        os.rename(dest + '.fdown0', dest)
 
     Debug('다운로드 완료')
 
