@@ -25,6 +25,7 @@ import sys
 import os
 import requests
 import threading
+import time
 
 def Debug(str):
     print(str)
@@ -74,7 +75,6 @@ def MergeFile(dest, filelist):
                     fd_dest.write(buf)
                     buf = src.read(FILE_BUFFER_SIZE)
     
-    print(filelist)
     del filelist
     
     
@@ -118,6 +118,9 @@ def ParseEQMap(content,sep):
     return eq_map
 
 def Main(argv):
+#   시간 측정 시작
+    start = time.time()
+    
     thread_count = DEFAULT_THREAD_COUNT
     cookie = ""
 
@@ -187,5 +190,8 @@ def Main(argv):
 
     Debug('다운로드 완료')
 
+#   시간 측정 끝
+    print("time :", time.time() - start)
+    
 if __name__ == "__main__":
     Main(sys.argv)
