@@ -16,6 +16,10 @@ This is download booster, with Python
 - Python 3.6.8
 - requests
 
+## If you wnat run *test.py* you need to have that 
+- Pandas
+- Plotly
+
 ---
 
 # Function Description
