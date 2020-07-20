@@ -15,7 +15,7 @@ dir/filename에 최종적으로 파일이 합쳐집니다.
 
 목표: 멀티스레딩과 HTTP Range Request를 활용하여 다운로드 속도를 증가시킵니다.
 
-현재 샘플: python main.py python main.py https://files.cloud.naver.com/file/download.api?resourceKey=YnJhaW5lcjEyMzQ1fDEzMTg1NzI2NDAwfEZ8MA -f Shin.mp4 -c "_gid=GA1.2.799192114.1594645465; _ga=GA1.2.1604843523.1594645465; NRTK=ag#all_gr#1_ma#-2_si#0_en#0_sp#0; NDARK=Y; nid_inf=-972008414; NID_JKL=huhz+Zgy2wLUGn8on2oW+dK/fzhbVrl8H3zzRD8oTm0=; NID_SES=AAABeDzsgHcIj0uCxnSXYS9oGOy5vk3ima1Yw9dIiEvl7LPgBy7rQaeo2Tvpin0hoR0R21KPeAXqjuvCa5jlozBD+81Kd5sWSJTubZYgtGBpLfZ6vinKauRpcnjRqn5chAsD1uZ3didNbFC9a53KADKeuXdBLBL6LItJiHblwHQniEnlmygePVb6z73RYGL6828TRIsDQtdHQf18g926QLtOzYtHqubORN+N/WOm44WdozqK4F5dwZHSzIsJoWKSsMNpIWaTvKxx5W78I2fE3MF6PbVEOSV3Jgvr49xj3WacSzJo1EpEzZcPEk3HJHQZ3R/avNrxiw6vFl7GyCCzz7/BXJL25VHdQ7VF1UEKm+/oy6Nyn6C7SUzpIbaYJ/NR+u62G6u90lA/ib9cUN5CduvOqg+tPdbKvWtoFNWB9t7J6UoMwNQ45S7e9DIGPi5hMIHEuHhCLITN3CO6EB0T2/WCfLl//q3a3uSyHCt9u+pPo19hz8hfGEsvP5Cq0jafRgJZNg=="
+현재 샘플: python main.py https://files.cloud.naver.com/file/download.api?resourceKey=YnJhaW5lcjEyMzQ1fDEzMTg1NjcyODcyfEZ8MA -f Shin.mp4 -c "_ga=GA1.2.1604843523.1594645465; NRTK=ag#all_gr#1_ma#-2_si#0_en#0_sp#0; NDARK=Y; page_uid=Uxa2cwp0J14ssiDWNwVssssstTs-174259; nx_ssl=2; nid_inf=-957558889; NID_JKL=Dyt51oF2g4Cs3bFN7uEg71rTS3lrfTCANHUhKZakw40=; NID_SES=AAABdquM0A9Z1KDUy011l1lE4BEr5fmMb9BoS01fo3L+pwBuu7oqeM9CNQg+fHSnv21owWgQJKAKVxYKQ+ZNJFbPW7tMSx7jK4p1MF18qwx7WvPoeGituRji/SUycETxY3D8/Im2iZRg0q2KNkgP1NkaM7VU1sISR8VPNLuWNOtmyV5GJKkl1pCIRWU8uOeOrGEm25ywgj+mG6dyg+KuQ2uCPOY6wmalB8gV9+pmHld+lzm7aNO/esmQzAT/kKtbS3AYeN27BE5s/kCVztw2go8zig5MOlgzgjjGFmHESKZ8gXff9U2A4N6tIvTINU7i6s4Pi4/JR1D74vlNtOJ2jTF5tgaQ566bVmpON+iNjoXh6k3yM9mpyXwTtqUjnwqTX5df5ToCS7DReNAcXAQ8vK9RsFXVxzHN96FfEfQAkOFjgwQhAr0oO1rcD2l8N0ftyrew3M0uVWCUdv7Mqxf9Q0KoC1kmwZl+eehUDIt1Cme8lOUFR4BZtrn/2pQLRktgUwleow=="
 """
 
 DEFAULT_THREAD_COUNT = 8
@@ -25,7 +25,6 @@ import sys
 import os
 import requests
 import threading
-import time
 
 def Debug(str):
     print(str)
@@ -118,8 +117,6 @@ def ParseEQMap(content,sep):
     return eq_map
 
 def Main(argv):
-#   시간 측정 시작
-    start = time.time()
     
     thread_count = DEFAULT_THREAD_COUNT
     cookie = ""
@@ -138,7 +135,7 @@ def Main(argv):
 
     for o, v in arg_map.items():
         if o == '-t':
-            thread_count = v
+            thread_count = int(v)
         elif o == '-c':
             cookie = v
         elif o == '-f':
@@ -190,8 +187,6 @@ def Main(argv):
 
     Debug('다운로드 완료')
 
-#   시간 측정 끝
-    print(f"time: {time.time() - start} sec")
     
 if __name__ == "__main__":
     Main(sys.argv)
