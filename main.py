@@ -14,8 +14,6 @@ dir/filename에 최종적으로 파일이 합쳐집니다.
 분할 다운로드가 모두 끝날 경우 각 파일을 합쳐 하나의 파일로 합칩니다.
 
 목표: 멀티스레딩과 HTTP Range Request를 활용하여 다운로드 속도를 증가시킵니다.
-
-현재 샘플: python main.py https://files.cloud.naver.com/file/download.api?resourceKey=YnJhaW5lcjEyMzQ1fDEzMTg1NjcyODcyfEZ8MA -f Shin.mp4 -c "_ga=GA1.2.1604843523.1594645465; NRTK=ag#all_gr#1_ma#-2_si#0_en#0_sp#0; NDARK=Y; page_uid=Uxa2cwp0J14ssiDWNwVssssstTs-174259; nx_ssl=2; nid_inf=-957558889; NID_JKL=Dyt51oF2g4Cs3bFN7uEg71rTS3lrfTCANHUhKZakw40=; NID_SES=AAABdquM0A9Z1KDUy011l1lE4BEr5fmMb9BoS01fo3L+pwBuu7oqeM9CNQg+fHSnv21owWgQJKAKVxYKQ+ZNJFbPW7tMSx7jK4p1MF18qwx7WvPoeGituRji/SUycETxY3D8/Im2iZRg0q2KNkgP1NkaM7VU1sISR8VPNLuWNOtmyV5GJKkl1pCIRWU8uOeOrGEm25ywgj+mG6dyg+KuQ2uCPOY6wmalB8gV9+pmHld+lzm7aNO/esmQzAT/kKtbS3AYeN27BE5s/kCVztw2go8zig5MOlgzgjjGFmHESKZ8gXff9U2A4N6tIvTINU7i6s4Pi4/JR1D74vlNtOJ2jTF5tgaQ566bVmpON+iNjoXh6k3yM9mpyXwTtqUjnwqTX5df5ToCS7DReNAcXAQ8vK9RsFXVxzHN96FfEfQAkOFjgwQhAr0oO1rcD2l8N0ftyrew3M0uVWCUdv7Mqxf9Q0KoC1kmwZl+eehUDIt1Cme8lOUFR4BZtrn/2pQLRktgUwleow=="
 """
 
 DEFAULT_THREAD_COUNT = 8
@@ -49,7 +47,7 @@ def DownloadFileByRange(url, cookie, dest, begin, end):
             end = end - 1
         Debug(f'다운로드 시작: {dest}')
         res = requests.get(url, headers={"Range": f"bytes={begin}-{end}", "Cookie": cookie}, allow_redirects=True)
-        open(dest,'wb').write(res.content)
+        open(dest, 'wb').write(res.content)
 
         content_len = res.headers['Content-Length']
         Debug(f'다운로드 완료: {dest}({content_len} bytes)')
@@ -73,16 +71,15 @@ def MergeFile(dest, filelist):
                 while buf:
                     fd_dest.write(buf)
                     buf = src.read(FILE_BUFFER_SIZE)
-    
+
     del filelist
-    
-    
+
 def ParseArgv(argv):
     arg_map = {}
     arg_list = []
     reserved_label = None
     is_quoted = False
-    
+
     for arg in argv:
         if reserved_label:
             if not is_quoted and arg.startswith('"') and arg_map[reserved_label] is None:
@@ -98,7 +95,7 @@ def ParseArgv(argv):
             else:
                 arg_map[reserved_label] = arg
                 reserved_label = None
-        
+
         elif arg.startswith("-"):
             reserved_label = arg
         else:
@@ -117,7 +114,6 @@ def ParseEQMap(content,sep):
     return eq_map
 
 def Main(argv):
-    
     thread_count = DEFAULT_THREAD_COUNT
     cookie = ""
 
@@ -128,7 +124,7 @@ def Main(argv):
     if len(arg_list) != 2:
         Debug(USEAGE)
         return
-    
+
     url = arg_list[1]
     filedir = '.'
     filename = None
@@ -148,7 +144,7 @@ def Main(argv):
             return
 
     res = requests.get(url, headers={"Range":"0-", "Cookie": cookie})
-    res.encoding = 'UTF-8'   
+    res.encoding = 'UTF-8'
     headers = res.headers
     Debug(headers)
 
@@ -162,7 +158,7 @@ def Main(argv):
     else:
         if filename is None:
             filename = 'download'
-    
+
     dest = filedir + os.path.sep + filename
 
     if 'Accept-Ranges' not in headers or headers['Accept-Ranges'] == 'none' or 'Content-Length' not in headers or int(headers['Content-Length']) <= 1024:
@@ -173,8 +169,8 @@ def Main(argv):
         chunk_size = content_len // thread_count
         if content_len % thread_count:
             chunk_size = chunk_size + 1
-    
-        threads = [threading.Thread(target=DownloadFileByRange,args=(url,cookie,dest+f'.fdown{i}',i*chunk_size,'' if i+1 == thread_count else (i+1)*chunk_size)) for i in range(thread_count)]
+
+        threads = [threading.Thread(target=DownloadFileByRange,args=(url, cookie, dest+f'.fdown{i}', i*chunk_size, '' if i+1 == thread_count else (i+1)*chunk_size)) for i in range(thread_count)]
 
         for thread in threads:
             thread.start()
@@ -187,6 +183,6 @@ def Main(argv):
 
     Debug('다운로드 완료')
 
-    
+
 if __name__ == "__main__":
     Main(sys.argv)
