@@ -32,7 +32,7 @@ def DownloadFile(url, cookie, dest):
     범위없는 file을 경로 dest로 다운로드합니다.
     """
     Debug(f'다운로드 시작: {dest}')
-    res = requests.get(url, headers={"Cookie": cookie}, allow_redirects=True)
+    res = requests.get(url, headers={"Cookie": cookie}, allow_redirects=True, stream = True)
     open(dest,'wb').write(res.content)
 
     content_len = res.headers['Content-Length']
@@ -46,7 +46,7 @@ def DownloadFileByRange(url, cookie, dest, begin, end):
         if end is not '':
             end = end - 1
         Debug(f'다운로드 시작: {dest}')
-        res = requests.get(url, headers={"Range": f"bytes={begin}-{end}", "Cookie": cookie}, allow_redirects=True)
+        res = requests.get(url, headers={"Range": f"bytes={begin}-{end}", "Cookie": cookie}, allow_redirects=True, stream = True)
         open(dest, 'wb').write(res.content)
 
         content_len = res.headers['Content-Length']
@@ -143,7 +143,7 @@ def Main(argv):
             Debug(USEAGE)
             return
 
-    res = requests.get(url, headers={"Range":"0-", "Cookie": cookie})
+    res = requests.get(url, headers={"Range":"0-", "Cookie": cookie}, stream = True)
     res.encoding = 'UTF-8'
     headers = res.headers
     Debug(headers)
