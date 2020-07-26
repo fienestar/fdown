@@ -6,28 +6,32 @@ import plotly.graph_objs as go
 import main
 import os.path
 
-Result = []
+Result = [[0]*9 for i in range(11)]
 
 if os.path.isfile('./ARG.txt'):
-    for i in range (1, 9):
-        ARG = open("./ARG.txt", 'r')
-        CMD = ARG.read()
-        ARG.close()
+    for k in range (1, 11):
+        for i in range (1, 9):
+            ARG = open("./ARG.txt", 'r')
+            CMD = ARG.read()
+            ARG.close()
 
-        CMD += ' -t '
-        CMD += str(i)
+            CMD += ' -t '
+            CMD += str(i)
 
-        #   시간 측정 시작
-        start = time.time()
+            #   시간 측정 시작
+            start = time.time()
 
-        os.system(CMD)
+            os.system(CMD)
 
-        #   시간 측정 종료
-        Result.append(time.time() - start)
+            #   시간 측정 종료
+            Result[k][i] = time.time() - start
+            print(Result)
 
 ResultDF = pd.DataFrame(Result).rename(columns = {0: 'Time'})
 ResultDF.index.names = ['Thread_Count']
 ResultDF.reset_index(level=0, inplace=True)
+
+ResultDF = ResultDF.drop(ResultDF.index[0])
 
 print(ResultDF)
 ResultDF.to_csv('./Result.csv', encoding='utf-8')
