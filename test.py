@@ -27,8 +27,8 @@ if os.path.isfile('./ARG.txt'):
             Result[k][i] = time.time() - start
             print(Result)
 
-ResultDF = pd.DataFrame(Result).rename(columns = {0: 'Time'})
-ResultDF.index.names = ['Thread_Count']
+ResultDF = pd.DataFrame(Result).rename(columns = {0: 'Thread_Count'})
+ResultDF.index.names = ['Time']
 ResultDF.reset_index(level=0, inplace=True)
 
 ResultDF = ResultDF.drop(ResultDF.index[0])
