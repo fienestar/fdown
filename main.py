@@ -39,8 +39,13 @@ def DownloadFile(url, cookie, dest):
     """
 
     Debug(f'다운로드 시작: {dest}')
-    res = requests.get(url, headers={"Cookie": cookie}, allow_redirects=True, stream = True)
-    open(dest,'wb').write(res.content)
+    with open(dest, 'wb') as ostream:
+        istream = requests.get(
+            url, headers={"Cookie": cookie}, allow_redirects=True, stream=True)
+
+        global CHUNK_SIZE
+        for chunk in istream.iter_content(chunk_size=CHUNK_SIZE):
+            ostream.write(chunk)
 
     content_len = res.headers['Content-Length']
     print(f'다운로드 완료: {dest}({content_len} bytes)')
@@ -53,8 +58,11 @@ def DownloadFileByRange(url, cookie, dest, begin, end):
     try:
         if end is not '':
             end = end - 1
-        Debug(f'다운로드 시작: {dest}')
-        res = requests.get(url, headers={"Range": f"bytes={begin}-{end}", "Cookie": cookie}, allow_redirects=True, stream = True)
+        print(f'다운로드 시작: {dest}')
+        res = requests.get(url, headers={
+            "Range": f"bytes={begin}-{end}", "Cookie": cookie},
+            allow_redirects=True,
+            stream=True)
         open(dest, 'wb').write(res.content)
 
         content_len = res.headers['Content-Length']
@@ -172,7 +180,9 @@ def Main(argv):
             Debug(USEAGE)
             return
 
-    res = requests.get(url, headers={"Range":"0-", "Cookie": cookie}, stream = True)
+    res = requests.get(
+        url, headers={"Range": "0-", "Cookie": cookie}
+    )
     res.encoding = 'UTF-8'
     headers = res.headers
     Debug(headers)
