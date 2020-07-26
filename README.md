@@ -13,7 +13,7 @@ This is download booster, with Python
 
 # **📋 Requirements**
 
-- Python 3.6.8
+- Python 3.7.4
 - requests
 
 ## If you wnat run *test.py* you need to have that 
