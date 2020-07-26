@@ -60,7 +60,7 @@ def DownloadFileByRange(url, cookie, dest, begin, end):
             end = end - 1
         print(f'다운로드 시작: {dest}')
         with open(dest, 'wb') as ostream:
-            requests.get(url, headers={
+            istream = requests.get(url, headers={
                 "Range": f"bytes={begin}-{end}", "Cookie": cookie},
                 allow_redirects=True,
                 stream=True)
@@ -69,7 +69,7 @@ def DownloadFileByRange(url, cookie, dest, begin, end):
             for chunk in istream.iter_content(chunk_size=CHUNK_SIZE):
                 ostream.write(chunk)
 
-        content_len = res.headers['Content-Length']
+        content_len = istream.headers['Content-Length']
         print(f'다운로드 완료: {dest}({content_len} bytes)')
     except:
         print(f'URL: {url}')
