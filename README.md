@@ -1,7 +1,7 @@
 # About
 This is download booster, with Python
 
-**It sends HTML packets multiple times, allowing multi-threading to download at the maximum speed of the support network.**
+**It sends HTTP packets multiple times, allowing multi-threading to download at the maximum speed of the support network.**
 
 ---
 

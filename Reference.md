@@ -16,7 +16,7 @@ https://stackoverflow.com/a/23602538/10445743
 ### 첫 100 byte 까지 Download 받기의 예시
 ```python
 url = "http://download.thinkbroadband.com/5MB.zip"
-headers = {"Range": "bytes=0-100"}  # first 100 bytes
+headers = {"Range": "bytes=0-100"}  # first '101' bytes([0,100])
 
 r = get(url, headers=headers)
 ```
