@@ -36,7 +36,8 @@ def DownloadFile(url, cookie, dest):
     open(dest,'wb').write(res.content)
 
     content_len = res.headers['Content-Length']
-    Debug(f'다운로드 완료: {dest}({content_len} bytes)')
+    print(f'다운로드 완료: {dest}({content_len} bytes)')
+
 
 def DownloadFileByRange(url, cookie, dest, begin, end):
     """
@@ -50,13 +51,15 @@ def DownloadFileByRange(url, cookie, dest, begin, end):
         open(dest, 'wb').write(res.content)
 
         content_len = res.headers['Content-Length']
-        Debug(f'다운로드 완료: {dest}({content_len} bytes)')
+        print(f'다운로드 완료: {dest}({content_len} bytes)')
     except:
-        Debug(f'URL: {url}')
-        Debug(f'Cookie: {cookie}')
-        Debug(f'dest: {dest}')
-        Debug(f'begin: {begin}')
-        Debug(f'end: {end}')
+        print(f'URL: {url}')
+        print(f'Cookie: {cookie}')
+        print(f'dest: {dest}')
+        print(f'begin: {begin}')
+        print(f'end: {end}')
+        print('DownloadFileByRange에서 알 수 없는 오류가 발생했습니다.')
+
 
 def MergeFile(dest, filelist):
     """
@@ -181,7 +184,7 @@ def Main(argv):
         [os.remove(dest + f'.fdown{i}') for i in range(1, thread_count)]
         os.rename(dest + '.fdown0', dest)
 
-    Debug('다운로드 완료')
+    print('다운로드 완료')
 
 
 if __name__ == "__main__":
