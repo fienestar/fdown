@@ -161,7 +161,7 @@ def Main(argv):
 
     dest = filedir + os.path.sep + filename
 
-    if 'Accept-Ranges' not in headers or headers['Accept-Ranges'] == 'none' or 'Content-Length' not in headers or int(headers['Content-Length']) <= 1024:
+    if thread_count == 1 or 'Accept-Ranges' not in headers or headers['Accept-Ranges'] == 'none' or 'Content-Length' not in headers or int(headers['Content-Length']) <= 1024:
         Debug('속도 증가 불가')
         DownloadFile(url, cookie, dest)
     else:
