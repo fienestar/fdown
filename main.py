@@ -73,7 +73,7 @@ def MergeFile(dest, filelist):
     filelist의 파일들을 dest에 합칩니다.
     """
     global FILE_BUFFER_SIZE
-    with open(dest, 'ab') as fd_dest: # append binary
+    with open(dest, 'ab') as fd_dest:
         for filename in filelist:
             Debug(f'[{filename}] 합치는중..')
             with open(filename, 'rb') as src:
@@ -86,6 +86,18 @@ def MergeFile(dest, filelist):
 
 
 def ParseArgv(argv):
+    """
+    argv: 공백으로 나눠진 인자 배열을 받습니다.
+    ParseArgv(argv) -> arg_map,arg_list
+
+    arg_map = (option_name, value)
+        -option_name 값
+        -option_name "공백이 포함된 값"
+
+    arg_list = [option, option, ...]
+        option
+        앞에 '-'없이 홀로 존재하는 겂들
+    """
     arg_map = {}
     arg_list = []
     reserved_label = None
@@ -115,7 +127,11 @@ def ParseArgv(argv):
     return (arg_map, arg_list)
 
 
-def ParseEQMap(content,sep):
+def ParseEQMap(content, sep):
+    """
+    ParseEQMap(content, sep) => {key:value, ...}
+    sep로 분리하여 각각을 'key=value'형식으로 보고 map으로 반환합니다.
+    """
     eq_map = {}
     for splited in content.split(sep):
         try:
