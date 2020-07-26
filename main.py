@@ -16,21 +16,28 @@ dir/filename에 최종적으로 파일이 합쳐집니다.
 목표: 멀티스레딩과 HTTP Range Request를 활용하여 다운로드 속도를 증가시킵니다.
 """
 
+import threading
+import requests
+import os
+import sys
+
+# 상수
 DEFAULT_THREAD_COUNT = 8
 FILE_BUFFER_SIZE = 256 * 1024
+CHUNK_SIZE = 1024
 
-import sys
-import os
-import requests
-import threading
+# 디버그가 아닐땐 print 대신 pass
+
 
 def Debug(str):
     print(str)
+
 
 def DownloadFile(url, cookie, dest):
     """
     범위없는 file을 경로 dest로 다운로드합니다.
     """
+
     Debug(f'다운로드 시작: {dest}')
     res = requests.get(url, headers={"Cookie": cookie}, allow_redirects=True, stream = True)
     open(dest,'wb').write(res.content)
@@ -77,6 +84,7 @@ def MergeFile(dest, filelist):
 
     del filelist
 
+
 def ParseArgv(argv):
     arg_map = {}
     arg_list = []
@@ -104,7 +112,8 @@ def ParseArgv(argv):
         else:
             arg_list.append(arg)
 
-    return (arg_map,arg_list)
+    return (arg_map, arg_list)
+
 
 def ParseEQMap(content,sep):
     eq_map = {}
@@ -115,6 +124,7 @@ def ParseEQMap(content,sep):
         except:
             pass
     return eq_map
+
 
 def Main(argv):
     thread_count = DEFAULT_THREAD_COUNT
@@ -152,7 +162,7 @@ def Main(argv):
     Debug(headers)
 
     if 'Content-Disposition' in headers:
-        server_file_name = ParseEQMap(headers['Content-Disposition'],';')['filename']
+        server_file_name = ParseEQMap(headers['Content-Disposition'], ';')['filename']
 
         if filename is None:
             filename = server_file_name
@@ -173,15 +183,21 @@ def Main(argv):
         if content_len % thread_count:
             chunk_size = chunk_size + 1
 
-        threads = [threading.Thread(target=DownloadFileByRange,args=(url, cookie, dest+f'.fdown{i}', i*chunk_size, '' if i+1 == thread_count else (i+1)*chunk_size)) for i in range(thread_count)]
+        threads = [threading.Thread(target=DownloadFileByRange, args=(
+            url, cookie, dest+f'.fdown{i}', i*chunk_size, '' if i+1 == thread_count else (i+1)*chunk_size)) for i in range(thread_count)]
 
         for thread in threads:
             thread.start()
 
         for thread in threads:
             thread.join()
-        MergeFile(dest + '.fdown0', [dest + f'.fdown{i}' for i in range(1, thread_count)])
-        [os.remove(dest + f'.fdown{i}') for i in range(1, thread_count)]
+
+        MergeFile(dest + '.fdown0',
+                  [dest + f'.fdown{i}' for i in range(1, thread_count)])
+
+        for i in range(1, thread_count):
+            os.remove(dest + f'.fdown{i}')
+
         os.rename(dest + '.fdown0', dest)
 
     print('다운로드 완료')
