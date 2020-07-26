@@ -185,11 +185,12 @@ def Main(argv):
             return
 
     res = requests.get(
-        url, headers={"Range": "0-", "Cookie": cookie}
+        url, headers={"Range": "0-", "Cookie": cookie}, stream = True
     )
     res.encoding = 'UTF-8'
     headers = res.headers
     Debug(headers)
+    res.close()
 
     if 'Content-Disposition' in headers:
         server_file_name = ParseEQMap(headers['Content-Disposition'], ';')['filename']
